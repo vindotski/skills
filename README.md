@@ -34,10 +34,13 @@ maker.
 - Its **source repo and commit** are written down.
 - Its licence is **checked before** it is copied.
 - An update is **made on purpose**: a new copy from a new commit, in its own pull request.
-- A copy stays **identical to its original**. We don't patch it.
+- A copy stays **identical to its original**, with two allowed differences, each written down in
+  `SOURCES.md`: a **patch**, only when a shared rule forces it (for example, `npx` replaced by a
+  pinned CLI), and a **left-out folder** the repo doesn't use (for example, `agents/` or `evals/`).
 
 One file at the root of this repo, `SOURCES.md`, lists each adopted skill with its source repo,
-commit and licence. It is added with the first skill that is copied in.
+commit and licence, every patch made to a copy, and every folder left out. It is added with the
+first skill that is copied in.
 
 ## Skills to move in
 
@@ -67,24 +70,30 @@ states, and it is confirmed before the copy.
 `tdd` and `webapp-testing` are the two testing skills every repo uses. We write no testing skill of
 our own.
 
-The others are pinned in Spotcraft today, each to a commit, in its `skills-lock.json`. Some of
-Spotcraft's copies are patched (for example, a pinned CLI in place of `npx`). The copies here are
-not: each one is copied unchanged from its source, `terraform-style-guide` included.
-`web-design-guidelines` also carries the guidelines text from
+All but `terraform-style-guide` are pinned in Spotcraft today, each to a commit, in its
+`skills-lock.json`. `terraform-style-guide` is in the hetzner template, with no commit recorded yet.
+Two of Spotcraft's copies are patched: `shadcn-svelte` (a pinned CLI in place of `npx`) and
+`terraform-style-guide` (an OpenTofu note). The same patches are made here and recorded in
+`SOURCES.md`. Spotcraft's copies also leave out the `agents/` and `evals/` folders; that is
+recorded too.
+
+`web-design-guidelines` is Spotcraft's copy plus a second source: its guidelines text from
 [vercel-labs/web-interface-guidelines](https://github.com/vercel-labs/web-interface-guidelines)
-(MIT, to check).
+(MIT, to check). The upstream skill fetches that text at run time; Spotcraft vendors it as
+`references/guidelines.md` and patches the skill to read it. Both sources and the patch are
+recorded in `SOURCES.md`.
 
-### Written for Spotcraft, to move from there
+### Written by us, to move in
 
-These are ours. They move from Spotcraft and lose what only fits Spotcraft.
+These are ours. They move from the repo named below and lose what only fits that repo.
 
-| Skill | What it does |
-| --- | --- |
-| `commit-message` | A Conventional Commits message, then the commit |
-| `adr` | A decision record: numbering, front matter, superseding |
-| `release` | A release: version bump, changelog, tag |
-| `github-workflows` | GitHub Actions workflows: actions pinned to commits, least-privilege permissions |
-| `astro-site` | A static website on Astro: no UI framework, Markdown docs, GitHub Pages |
+| Skill | Now in | What it does |
+| --- | --- | --- |
+| `commit-message` | Spotcraft | A Conventional Commits message, then the commit |
+| `adr` | Spotcraft | A decision record: numbering, front matter, superseding |
+| `release` | Spotcraft | A release: version bump, changelog, tag |
+| `github-workflows` | Spotcraft | GitHub Actions workflows: actions pinned to commits, least-privilege permissions |
+| `astro-site` | kodentuzo/website | A static website on Astro: no UI framework, Markdown docs, GitHub Pages |
 
 ## Layout
 
@@ -102,17 +111,22 @@ template/
 ## Using skills in a project
 
 A repo lists the skills it uses in its `skills-lock.json`: where each comes from, and the exact
-commit. A Kodentuzo repo installs from this repo first, then from `kodentuzo/skills`.
+commit. A Kodentuzo repo installs from this repo first, then from `kodentuzo/skills`. Every
+Kodentuzo repo keeps a `skills-lock.json`, the docs-only ones too. This repo has none: it installs
+nothing.
 
 **With the installer** (planned, not set up in any repo yet): one command pulls the listed skills
-into `.agents/skills`. The installer is the open `skills` CLI. It is a pinned dev dependency of the
-repo and runs through pnpm (`pnpm exec skills …`), never through `npx`. To check when building:
-whether it reads Spotcraft's `skills-lock.json` as it is. If not, its own lock format is adopted.
+into `.agents/skills`. The installer is the open `skills` CLI, pinned to an exact version and run
+through pnpm, never through `npx`. A repo with a `package.json` has it as a pinned dev dependency
+and runs `pnpm exec skills …`. A repo with none runs `pnpm dlx skills@<exact version> …`. The exact
+subcommand is checked when building, and so is whether it reads Spotcraft's `skills-lock.json` as
+it is. If not, its own lock format is adopted.
 
 The plan is that skills live in `.agents/skills`, the folder many agents read, and `.claude/skills`
 is a symlink to it (`../.agents/skills`). It is tried in one repo first.
 
-**By hand:** copy a skill directory into the project's skills folder:
+**Outside Kodentuzo,** by hand: copy a skill directory into the project's skills folder. A Kodentuzo
+repo never does this, because a hand copy has no entry in `skills-lock.json` and no commit.
 
 ```bash
 cp -r skills/<name> /path/to/project/.agents/skills/<name>
