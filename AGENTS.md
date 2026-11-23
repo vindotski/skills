@@ -14,12 +14,16 @@ checkout `@~/Repositories/kodentuzo/.github/AGENTS.md`. This file wins where the
 ## Conventions
 
 - One skill per pull request. The rules for `SKILL.md` are in [CONTRIBUTING.md](CONTRIBUTING.md).
-- A skill we didn't write is copied in with its licence file kept, and its source repo and commit
-  written down. Check its licence first. Never link to the maker's repo instead of copying.
+- A skill we didn't write is copied in unchanged, with its licence file kept. Check its licence
+  first. Never link to the maker's repo instead of copying.
+- Write its source repo, commit and licence in `SOURCES.md` at the root (added with the first
+  copied skill), not in the skill's frontmatter. An update is a new copy from a new commit.
 - Add each skill to the **Skills** table in [README.md](README.md).
 - Plain, short sentences.
 
 ## Exceptions
 
-- No `package.json`, so no `pnpm check` or `verify`. A skill is validated with `skills-ref` (see
-  [CONTRIBUTING.md](CONTRIBUTING.md)).
+- No JavaScript, so like `.github` and the hetzner template this repo keeps the general root files
+  (README, CHANGELOG, LICENSE, CONTRIBUTING, `AGENTS.md`) and skips the JavaScript-only ones
+  (`.nvmrc`, `biome.json`, pnpm). So there is no `pnpm check` or `verify`. A skill is validated
+  with `skills-ref` (see [CONTRIBUTING.md](CONTRIBUTING.md)).

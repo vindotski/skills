@@ -17,7 +17,7 @@ A skill belongs here when it works anywhere:
 - releases;
 - GitHub workflows;
 - testing;
-- skills for a stack (Docker, Fastify, Node, Svelte, pnpm, Vite and the like).
+- skills for a stack (Docker, Fastify, Node, Svelte, pnpm, Vite, Terraform, Astro and the like).
 
 A skill that only makes sense for Kodentuzo's products goes to
 [kodentuzo/skills](https://github.com/kodentuzo/skills). A skill that is useless outside one repo
@@ -34,9 +34,10 @@ maker.
 - Its **source repo and commit** are written down.
 - Its licence is **checked before** it is copied.
 - An update is **made on purpose**: a new copy from a new commit, in its own pull request.
+- A copy stays **identical to its original**. We don't patch it.
 
-Open: where the source and commit are written (the skill's frontmatter `metadata`, or one file at
-the root of this repo).
+One file at the root of this repo, `SOURCES.md`, lists each adopted skill with its source repo,
+commit and licence. It is added with the first skill that is copied in.
 
 ## Skills to move in
 
@@ -61,14 +62,16 @@ states, and it is confirmed before the copy.
 | `vite` | [antfu/skills](https://github.com/antfu/skills) `skills/vite` | MIT, to check |
 | `victoriametrics-query` | [VictoriaMetrics/skills](https://github.com/VictoriaMetrics/skills) `plugins/query/skills/victoriametrics-query` | Apache-2.0, to check |
 | `web-design-guidelines` | [vercel-labs/agent-skills](https://github.com/vercel-labs/agent-skills) `skills/web-design-guidelines` | MIT, to check (stated in the source's README; it has no licence file) |
+| `terraform-style-guide` | [hashicorp/agent-skills](https://github.com/hashicorp/agent-skills) `plugins/terraform/skills/terraform-style-guide` | MPL-2.0, to check; its licence file is kept |
 
 `tdd` and `webapp-testing` are the two testing skills every repo uses. We write no testing skill of
 our own.
 
 The others are pinned in Spotcraft today, each to a commit, in its `skills-lock.json`. Some of
-Spotcraft's copies are patched (for example, a pinned CLI in place of `npx`). Those patches are
-checked again when the skill moves here. `web-design-guidelines` also carries the guidelines text
-from [vercel-labs/web-interface-guidelines](https://github.com/vercel-labs/web-interface-guidelines)
+Spotcraft's copies are patched (for example, a pinned CLI in place of `npx`). The copies here are
+not: each one is copied unchanged from its source, `terraform-style-guide` included.
+`web-design-guidelines` also carries the guidelines text from
+[vercel-labs/web-interface-guidelines](https://github.com/vercel-labs/web-interface-guidelines)
 (MIT, to check).
 
 ### Written for Spotcraft, to move from there
@@ -81,6 +84,7 @@ These are ours. They move from Spotcraft and lose what only fits Spotcraft.
 | `adr` | A decision record: numbering, front matter, superseding |
 | `release` | A release: version bump, changelog, tag |
 | `github-workflows` | GitHub Actions workflows: actions pinned to commits, least-privilege permissions |
+| `astro-site` | A static website on Astro: no UI framework, Markdown docs, GitHub Pages |
 
 ## Layout
 
@@ -100,10 +104,15 @@ template/
 A repo lists the skills it uses in its `skills-lock.json`: where each comes from, and the exact
 commit. A Kodentuzo repo installs from this repo first, then from `kodentuzo/skills`.
 
-Open: the installer command. The plan is the open `skills` installer, pinned like any other CLI.
-Whether it reads Spotcraft's `skills-lock.json` as it is has to be checked.
+**With the installer** (planned, not set up in any repo yet): one command pulls the listed skills
+into `.agents/skills`. The installer is the open `skills` CLI. It is a pinned dev dependency of the
+repo and runs through pnpm (`pnpm exec skills …`), never through `npx`. To check when building:
+whether it reads Spotcraft's `skills-lock.json` as it is. If not, its own lock format is adopted.
 
-**By hand:** copy a skill directory into the agent's skills folder:
+The plan is that skills live in `.agents/skills`, the folder many agents read, and `.claude/skills`
+is a symlink to it (`../.agents/skills`). It is tried in one repo first.
+
+**By hand:** copy a skill directory into the project's skills folder:
 
 ```bash
 cp -r skills/<name> /path/to/project/.agents/skills/<name>
