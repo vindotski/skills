@@ -34,9 +34,10 @@ Skills are MIT-licensed by default. If yours needs a different license, set `lic
 
 ## Validation
 
-Use the reference validator, [skills-ref](https://github.com/agentskills/agentskills/tree/main/skills-ref):
+Use the reference validator, [skills-ref](https://github.com/agentskills/agentskills/tree/main/skills-ref),
+pinned to an exact version (the exact version is set when the first skill lands):
 
 ```bash
-uvx --from skills-ref skills-ref validate skills/<skill-name>
-# or: pip install skills-ref && skills-ref validate skills/<skill-name>
+uvx --from skills-ref==<exact version> skills-ref validate skills/<skill-name>
+# or: pip install skills-ref==<exact version> && skills-ref validate skills/<skill-name>
 ```
